@@ -5,11 +5,11 @@ require("dotenv").config();
 const path = require("path");
 const SearchAI = require("./helper");
 const cron = require("node-cron");
-
+const axios = require("axios");
 app.use(express.json());
 
-app.get("/", () => {
-  return "Hello world";
+app.get("/", async (req, res) => {
+  return res.json({ message: "Hello world" });
 });
 
 app.post("/", async (req, res) => {
@@ -57,31 +57,14 @@ app.post("/", async (req, res) => {
   }
 });
 
-cron.schedule(" * */5 * * * *", () => {
-  const options = {
-    hostname: "https://ymirchatbot.onrender.com", // The hostname of your target URL
-    port: 443, // HTTPS port
-    path: "/", // The endpoint path
-    method: "GET",
-  };
-
-  https
-    .get(options, (res) => {
-      let data = "";
-
-      // Gather data from the response
-      res.on("data", (chunk) => {
-        data += chunk;
-      });
-
-      // Log the complete response once finished
-      res.on("end", () => {
-        console.log("Received response:", data);
-      });
-    })
-    .on("error", (error) => {
-      console.error("Error making HTTPS request:", error);
-    });
+cron.schedule("* * * * *", async () => {
+  console.log("cron running");
+  try {
+    const res = await axios.get("http://ymirchatbot.onrender.com/");
+    console.log(res.data);
+  } catch (err) {
+    console.log("err in res", err);
+  }
 });
 
 app.listen(port, () => {
