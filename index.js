@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = process.env.PORT ? process.env.PORT : 3000;
 require("dotenv").config();
 const path = require("path");
 const SearchAI = require("./helper");
@@ -59,7 +59,7 @@ app.post("/", async (req, res) => {
 
 cron.schedule(" * */5 * * * *", () => {
   const options = {
-    hostname: "", // The hostname of your target URL
+    hostname: "https://ymirchatbot.onrender.com", // The hostname of your target URL
     port: 443, // HTTPS port
     path: "/", // The endpoint path
     method: "GET",
